@@ -5,13 +5,12 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "dev": "npm run serve",
-    "serve": "npx @dcloudio/uni-cli serve",
-    "build": "npx @dcloudio/uni-cli build",
-    "build:cloudflare": "npm run build && cp _redirects dist/build/h5/"
+    "dev": "vue-cli-service serve",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build:cloudflare": "npm run build && cp _redirects dist/"
   },
   "dependencies": {
-    "@dcloudio/uni-app": "^2.0.0-32220211231001",
     "vue": "^2.6.14",
     "vue-i18n": "^8.28.2",
     "vuex": "^3.6.2",
@@ -19,8 +18,8 @@
     "core-js": "^3.8.3"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "^2.0.0-32220211231001",
-    "@dcloudio/vue-cli-plugin-uni": "^2.0.0-32220211231001",
+    "@dcloudio/uni-h5": "^2.0.2-20230220001",
+    "@dcloudio/uni-app": "^2.0.2-20230220001",
     "@vue/cli-service": "~4.5.0",
     "sass": "^1.32.13",
     "sass-loader": "^10.2.0",
