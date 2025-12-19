@@ -1,30 +1,16 @@
 {
   "pages": [
     {
-      "path": "pages/dashboard/index",
+      "path": "pages/home/index",
       "style": {
-        "navigationBarTitleText": "GLY",
+        "navigationBarTitleText": "Home",
         "enablePullDownRefresh": false
       }
     },
     {
-      "path": "pages/login/index",
+      "path": "pages/get/index",
       "style": {
-        "navigationBarTitleText": "Login",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/register/index",
-      "style": {
-        "navigationBarTitleText": "Register",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/quantification/index",
-      "style": {
-        "navigationBarTitleText": "Quantification",
+        "navigationBarTitleText": "Get",
         "enablePullDownRefresh": false
       }
     },
@@ -38,28 +24,32 @@
     {
       "path": "pages/mine/index",
       "style": {
-        "navigationBarTitleText": "My Profile",
+        "navigationBarTitleText": "Mine",
         "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "Login",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/register/index",
+      "style": {
+        "navigationBarTitleText": "Register",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom",
+        "disableScroll": true
       }
     },
     {
       "path": "pages/company/index",
       "style": {
         "navigationBarTitleText": "Company",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/deposit/index",
-      "style": {
-        "navigationBarTitleText": "Deposit",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/withdraw/index",
-      "style": {
-        "navigationBarTitleText": "Withdraw",
         "enablePullDownRefresh": false
       }
     },
@@ -83,46 +73,84 @@
         "navigationBarTitleText": "Rules",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/withdraw/index",
+      "style": {
+        "navigationBarTitleText": "Withdraw",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/deposit/index",
+      "style": {
+        "navigationBarTitleText": "Deposit",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/admin/index",
+      "style": {
+        "navigationBarTitleText": "Admin",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/backend/index",
+      "style": {
+        "navigationBarTitleText": "Backend",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "GLY",
-    "navigationBarBackgroundColor": "#1a1a1a",
+    "navigationBarBackgroundColor": "#36454f",
     "backgroundColor": "#1a1a1a",
-    "backgroundTextStyle": "light",
-    "enablePullDownRefresh": false
+    "app-plus": {
+      "background": "#1a1a1a"
+    }
   },
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#4e7771",
-    "backgroundColor": "#1a1a1a",
-    "borderStyle": "white",
+    "backgroundColor": "#36454f",
+    "borderStyle": "black",
     "list": [
       {
-        "pagePath": "pages/dashboard/index",
+        "pagePath": "pages/home/index",
         "text": "Home",
-        "iconPath": "static/tab-home.png",
-        "selectedIconPath": "static/tab-home-active.png"
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home-active.png"
       },
       {
-        "pagePath": "pages/quantification/index",
-        "text": "Quantify",
-        "iconPath": "static/tab-quantify.png",
-        "selectedIconPath": "static/tab-quantify-active.png"
+        "pagePath": "pages/get/index",
+        "text": "Get",
+        "iconPath": "static/get.png",
+        "selectedIconPath": "static/get-active.png"
       },
       {
         "pagePath": "pages/assets/index",
         "text": "Assets",
-        "iconPath": "static/tab-assets.png",
-        "selectedIconPath": "static/tab-assets-active.png"
+        "iconPath": "static/assets.png",
+        "selectedIconPath": "static/assets-active.png"
       },
       {
         "pagePath": "pages/mine/index",
         "text": "Mine",
-        "iconPath": "static/tab-mine.png",
-        "selectedIconPath": "static/tab-mine-active.png"
+        "iconPath": "static/mine.png",
+        "selectedIconPath": "static/mine-active.png"
       }
     ]
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+    }
   }
 }
