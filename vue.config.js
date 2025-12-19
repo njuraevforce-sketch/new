@@ -4,23 +4,15 @@ const path = require('path')
 module.exports = {
   outputDir: 'dist',
   publicPath: './',
-
-  chainWebpack: (config) => {
-    config.resolve.alias.set('@', path.resolve(__dirname, 'src'))
-    
-    // Критически важное правило для .mjs
-    config.module
-      .rule('mjs')
-        .test(/\.mjs$/)
-        .include.add(/node_modules/).end()
-        .type('javascript/auto')
-        .use('babel-loader')
-          .loader('babel-loader')
-          .options({
-            presets: ['@babel/preset-env']
-          });
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
+    }
   },
-  
+  // Главное: Эта настройка ВСЕ ЕЩЕ КРИТИЧНА.
+  // Она заставит встроенный babel-loader Vue CLI обработать эти пакеты.
   transpileDependencies: [
     'iceberg-js',
     /@supabase\/storage-js/,
