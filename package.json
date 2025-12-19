@@ -8,7 +8,8 @@
     "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:cloudflare": "npm run build && cp _redirects dist/"
+    "build:h5": "vue-cli-service build",
+    "build:cloudflare": "vue-cli-service build"
   },
   "dependencies": {
     "vue": "^2.6.14",
@@ -18,6 +19,7 @@
     "core-js": "^3.8.3"
   },
   "devDependencies": {
+    "vue-template-compiler": "^2.6.14", // <- КРИТИЧЕСКИ ВАЖНАЯ ЗАВИСИМОСТЬ
     "@dcloudio/uni-h5": "^2.0.2-20230220001",
     "@dcloudio/uni-app": "^2.0.2-20230220001",
     "@vue/cli-service": "~4.5.0",
