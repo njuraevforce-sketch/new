@@ -9,7 +9,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:h5": "vue-cli-service build",
-    "build:cloudflare": "vue-cli-service build"
+    "build:cloudflare": "vue-cli-service build && cp _redirects dist/"
   },
   "dependencies": {
     "vue": "^2.6.14",
@@ -31,8 +31,4 @@
     "node": ">=14.0.0",
     "npm": ">=6.0.0"
   }
-}
-"scripts": {
-  "build": "vue-cli-service build",
-  "build:cloudflare": "vue-cli-service build && cp _redirects dist/"
 }
