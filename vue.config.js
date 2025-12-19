@@ -4,24 +4,27 @@ const path = require('path')
 module.exports = {
   outputDir: 'dist',
   publicPath: './',
-  
-  chainWebpack: config => {
-    config.resolve.alias.set('@', path.resolve(__dirname, 'src'))
-    
-    // Правило для .mjs файлов
-    config.module
-      .rule('mjs')
-      .test(/\.mjs$/)
-      .include
-        .add(/node_modules/)
-        .end()
-      .type('javascript/auto')
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
+    },
+    // КРИТИЧНО: Правило для файлов .mjs из node_modules
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto'
+        }
+      ]
+    }
   },
-  
-  // Транспиляция всех проблемных пакетов
+  // КРИТИЧНО: Транспиляция конкретных проблемных пакетов
   transpileDependencies: [
-    /node_modules[\\/]iceberg-js/,
-    /node_modules[\\/]@supabase[\\/]storage-js/,
-    /node_modules[\\/]@supabase[\\/]supabase-js/
+    'iceberg-js',
+    /@supabase\/storage-js/,
+    /@supabase\/supabase-js/
   ]
 }
