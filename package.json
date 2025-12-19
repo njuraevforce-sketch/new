@@ -1,34 +1,43 @@
 {
-  "name": "gly-platform-uniapp",
+  "name": "gly-uni-app",
   "version": "1.0.0",
-  "description": "GLY Quantum Investment Platform - Uni-app Version",
+  "description": "GLY - Global Ledger Yield - AI-powered cryptocurrency trading platform",
   "main": "main.js",
-  "private": true,
   "scripts": {
-    "dev": "vue-cli-service serve",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build:h5": "vue-cli-service build",
-    "build:cloudflare": "vue-cli-service build && cp _redirects dist/"
+    "serve": "npm run dev:h5",
+    "build": "npm run build:h5",
+    "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build",
+    "dev:h5": "cross-env NODE_ENV=development UNI_PLATFORM=h5 vue-cli-service uni-serve",
+    "preview": "npm run build:h5 && cd dist/build/h5 && serve -s ."
   },
   "dependencies": {
-    "vue": "^2.6.14",
-    "vue-i18n": "^8.28.2",
-    "vuex": "^3.6.2",
+    "@dcloudio/uni-app": "^2.0.0",
+    "@dcloudio/uni-h5": "^2.0.0",
+    "@dcloudio/uni-mp-vue": "^2.0.0",
     "@supabase/supabase-js": "^2.39.3",
-    "core-js": "^3.8.3"
+    "qrcode": "^1.5.3",
+    "vue": "^2.6.14",
+    "vuex": "^3.6.2",
+    "axios": "^1.6.0",
+    "dayjs": "^1.11.10",
+    "core-js": "^3.26.0"
   },
   "devDependencies": {
-    "vue-template-compiler": "2.6.14", 
-    "@dcloudio/uni-h5": "^2.0.2-20230220001",
-    "@dcloudio/uni-app": "^2.0.2-20230220001",
-    "@vue/cli-service": "~4.5.0",
-    "sass": "^1.32.13",
-    "sass-loader": "^10.2.0",
-    "webpack": "^4.46.0"
+    "@dcloudio/uni-cli-shared": "^2.0.0",
+    "@dcloudio/vue-cli-plugin-hbuilderx": "^2.0.0",
+    "@dcloudio/vue-cli-plugin-uni": "^2.0.0",
+    "@dcloudio/webpack-uni-mp-loader": "^2.0.0",
+    "@dcloudio/webpack-uni-pages-loader": "^2.0.0",
+    "@vue/cli-service": "^5.0.8",
+    "cross-env": "^7.0.3",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.2",
+    "vue-template-compiler": "^2.6.14",
+    "webpack-merge": "^5.9.0"
   },
-  "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
-  }
+  "browserslist": [
+    "last 3 versions",
+    "Android >= 4.4",
+    "ios >= 9"
+  ]
 }
