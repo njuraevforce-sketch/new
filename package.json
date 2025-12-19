@@ -11,7 +11,7 @@
     "build:cloudflare": "npm run build && cp _redirects dist/build/h5/"
   },
   "dependencies": {
-    "@dcloudio/uni-app": "^3.0.0-alpha-4020420231207001",
+    "@dcloudio/uni-app": "^2.0.0-32220211231001",
     "vue": "^2.6.14",
     "vue-i18n": "^8.28.2",
     "vuex": "^3.6.2",
@@ -19,15 +19,15 @@
     "core-js": "^3.8.3"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "^3.0.0-alpha-4020420231207001",
-    "@dcloudio/vue-cli-plugin-uni": "^3.0.0-alpha-4020420231207001",
+    "@dcloudio/uni-cli-shared": "^2.0.0-32220211231001",
+    "@dcloudio/vue-cli-plugin-uni": "^2.0.0-32220211231001",
     "@vue/cli-service": "~4.5.0",
     "sass": "^1.32.13",
     "sass-loader": "^10.2.0",
     "webpack": "^4.46.0"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   }
 }
