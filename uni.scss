@@ -1,0 +1,710 @@
+/* Глобальные стили для GLY Uni-App */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: #1a1a1a;
+  color: white;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Карточки */
+.card {
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.padding {
+  padding: 15px;
+}
+
+.margin-top {
+  margin-top: 15px;
+}
+
+.margin-bottom {
+  margin-bottom: 15px;
+}
+
+/* Текст */
+.text-center {
+  text-align: center;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-gray {
+  color: #cccccc;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+/* Flex */
+.flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+/* Кнопки */
+.pro-btn {
+  background: #4e7771;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.pro-btn:hover {
+  background: #3a5d58;
+  transform: translateY(-2px);
+}
+
+.pro-btn:active {
+  transform: translateY(0);
+}
+
+.pro-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Поля ввода */
+.input-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-line {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #4e7771;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.input-line::placeholder {
+  color: #cccccc;
+}
+
+/* Цвета */
+.color-up {
+  color: #52c41a;
+}
+
+.color-down {
+  color: #ff6b6b;
+}
+
+/* VIP карусель */
+.custom-vip-carousel {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel-track {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vip-slide {
+  height: 130px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.vip-card {
+  background: linear-gradient(135deg, #2a2a2a, #36454f);
+  border-radius: 10px;
+  padding: 15px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.vip-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #f9ae3d;
+  margin-bottom: 5px;
+}
+
+/* Карусель баннеров */
+.home-carousel-container {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 15px;
+}
+
+.home-carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  height: 100%;
+}
+
+.home-carousel-slide {
+  flex: 0 0 100%;
+  height: 100%;
+}
+
+.home-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Бегущая строка */
+.notice-bar {
+  background: linear-gradient(90deg, #36454f, #4e7771);
+  padding: 15px;
+  margin: 0 15px 15px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.notice-content {
+  display: flex;
+  animation: noticeScroll 20s linear infinite;
+  white-space: nowrap;
+}
+
+.notice-text {
+  color: #f9ae3d;
+  font-size: 14px;
+  font-weight: bold;
+  padding-right: 50px;
+}
+
+@keyframes noticeScroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Сетка навигации */
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.nav-item {
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  background: #3a3a3a;
+  transform: translateY(-3px);
+}
+
+.nav-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+.nav-text {
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Крипто цены */
+.crypto-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.crypto-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.crypto-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crypto-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.crypto-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.crypto-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.crypto-pair {
+  color: #cccccc;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.crypto-price {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.crypto-change {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+.change-positive {
+  background: rgba(82, 196, 26, 0.2);
+  color: #52c41a;
+}
+
+.change-negative {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+}
+
+/* Транзакции */
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 3px solid;
+}
+
+.transaction-info {
+  flex: 1;
+}
+
+.transaction-type {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.transaction-date {
+  color: #cccccc;
+  font-size: 12px;
+}
+
+.transaction-amount {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Календарь */
+.calendar-section {
+  background: linear-gradient(135deg, #2a2a2a, #36454f);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.calendar-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.calendar-nav button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.calendar-day {
+  text-align: center;
+  padding: 8px;
+  color: #cccccc;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.calendar-date {
+  text-align: center;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.calendar-date:hover {
+  background: rgba(78, 119, 113, 0.3);
+}
+
+.calendar-date.today {
+  background: #4e7771;
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-time {
+  text-align: center;
+  color: #cccccc;
+  font-size: 12px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+/* Настройки */
+.settings-list {
+  margin-top: 15px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.setting-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.setting-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setting-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.setting-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.setting-value {
+  color: #4e7771;
+  font-weight: bold;
+}
+
+/* Модальные окна */
+.pop-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.pop-content {
+  background: white;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pop-header {
+  padding: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
+  text-align: center;
+  background: linear-gradient(135deg, #36454f, #5a6b76);
+  color: white;
+}
+
+.pop-body {
+  padding: 20px;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pop-footer {
+  padding: 15px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  display: flex;
+  gap: 10px;
+}
+
+.pop-footer button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+/* Сеть */
+.network-selection {
+  background: rgba(54, 69, 79, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  border: 1px solid rgba(54, 69, 79, 0.3);
+}
+
+.network-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.network-option {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  text-align: center;
+}
+
+.network-option.active {
+  background: rgba(54, 69, 79, 0.3);
+  border-color: #36454f;
+}
+
+.network-option:hover {
+  background: rgba(54, 69, 79, 0.2);
+}
+
+.network-icon {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.network-icon img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.network-name {
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .card {
+    margin: 8px;
+    padding: 12px;
+  }
+  
+  .nav-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .crypto-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .home-carousel-container {
+    height: 200px;
+    margin: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .network-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Специальные классы для Uni-app */
+.uni-tabbar {
+  background: #36454f !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.uni-tabbar__item {
+  color: #999999 !important;
+}
+
+.uni-tabbar__item--active {
+  color: #4e7771 !important;
+}
+
+.uni-navbar {
+  background: #36454f !important;
+}
+
+.uni-navbar__content__title {
+  color: white !important;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease;
+}
+
+/* Скроллбар */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4e7771;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a5d58;
+}
