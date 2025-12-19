@@ -1,29 +1,129 @@
+// pages.json
 {
-  "name": "gly-platform-uniapp",
-  "version": "1.0.0",
-  "description": "GLY Quantum Investment Platform - Uni-app Version",
-  "main": "main.js",
-  "scripts": {
-    "dev": "npm run serve",
-    "serve": "npx @dcloudio/uni-cli serve",
-    "build": "npx @dcloudio/uni-cli build",
-    "build:cloudflare": "npm run build && cp _redirects dist/build/h5/"
+  "pages": [
+    {
+      "path": "pages/dashboard/index",
+      "style": {
+        "navigationBarTitleText": "GLY",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "Login",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/register/index",
+      "style": {
+        "navigationBarTitleText": "Register",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/quantification/index",
+      "style": {
+        "navigationBarTitleText": "Quantification",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/assets/index",
+      "style": {
+        "navigationBarTitleText": "Assets",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/mine/index",
+      "style": {
+        "navigationBarTitleText": "My Profile",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/company/index",
+      "style": {
+        "navigationBarTitleText": "Company",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/deposit/index",
+      "style": {
+        "navigationBarTitleText": "Deposit",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/withdraw/index",
+      "style": {
+        "navigationBarTitleText": "Withdraw",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/invite/index",
+      "style": {
+        "navigationBarTitleText": "Invite",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/team/index",
+      "style": {
+        "navigationBarTitleText": "Team",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/rules/index",
+      "style": {
+        "navigationBarTitleText": "Rules",
+        "enablePullDownRefresh": false
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "GLY",
+    "navigationBarBackgroundColor": "#1a1a1a",
+    "backgroundColor": "#1a1a1a",
+    "backgroundTextStyle": "light",
+    "enablePullDownRefresh": false
   },
-  "dependencies": {
-    "@dcloudio/uni-app": "^2.0.0-32120210528002",
-    "@dcloudio/uni-h5": "^2.0.0-32120210528002",
-    "@supabase/supabase-js": "^2.39.3",
-    "core-js": "^3.8.3",
-    "vue": "^2.6.14",
-    "vue-i18n": "^8.28.2",
-    "vuex": "^3.6.2"
-  },
-  "devDependencies": {
-    "@dcloudio/uni-cli-shared": "^2.0.0-32120210528002",
-    "@dcloudio/vue-cli-plugin-uni": "^2.0.0-32120210528002",
-    "sass": "^1.32.13",
-    "sass-loader": "^10.2.0",
-    "@vue/cli-service": "~4.5.0",
-    "webpack": "^4.46.0"
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4e7771",
+    "backgroundColor": "#1a1a1a",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/dashboard/index",
+        "text": "Home",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/quantification/index",
+        "text": "Quantify",
+        "iconPath": "static/tab-quantify.png",
+        "selectedIconPath": "static/tab-quantify-active.png"
+      },
+      {
+        "pagePath": "pages/assets/index",
+        "text": "Assets",
+        "iconPath": "static/tab-assets.png",
+        "selectedIconPath": "static/tab-assets-active.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "Mine",
+        "iconPath": "static/tab-mine.png",
+        "selectedIconPath": "static/tab-mine-active.png"
+      }
+    ]
   }
 }
