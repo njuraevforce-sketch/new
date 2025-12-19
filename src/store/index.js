@@ -288,7 +288,7 @@ export default new Vuex.Store({
       const now = new Date()
       const utcHour = now.getUTCHours()
       const today = now.toISOString().split('T')[0]
-      const lastUpdate = state.user.last_signal_update?.split('T')[0]
+     const lastUpdate = state.user.last_signal_update && state.user.last_signal_update.split('T')[0]
       
       if (today !== lastUpdate && utcHour >= 18) {
         try {
