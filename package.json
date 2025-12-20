@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "2.0.2-4070620250821001",
-    "@dcloudio/vite-plugin-uni": "^4.0.11",
+    "@dcloudio/vite-plugin-uni": "4.0.11",
     "@vue/compiler-sfc": "^3.3.4",
     "vite": "^4.5.0",
     "sass": "^1.69.0"
