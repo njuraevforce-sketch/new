@@ -5,30 +5,28 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "uni -p h5",
-    "build": "uni build -p h5",
-    "preview": "uni preview",
-    "deploy": "npm run build",
-    "serve": "vite preview --port 5000"
+    "dev:h5": "uni dev -p h5",
+    "build:h5": "uni build -p h5",
+    "preview": "vite preview",
+    "deploy": "npm run build:h5"
   },
   "dependencies": {
-    "@dcloudio/uni-app": "^3.0.0",
+    "@dcloudio/uni-app": "3.0.0-3080920230817001",
     "@supabase/supabase-js": "^2.38.0",
-    "vue": "^3.3.0",
-    "vue-router": "^4.2.0",
-    "pinia": "^2.1.0",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5",
+    "pinia": "^2.1.7",
     "qrcode": "^1.5.3",
     "dayjs": "^1.11.10"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "^3.0.0",
-    "@dcloudio/vite-plugin-uni": "^3.0.0",
-    "@vue/compiler-sfc": "^3.3.0",
-    "vite": "^4.4.0",
-    "sass": "^1.66.0",
-    "@vitejs/plugin-vue": "^4.3.0"
+    "@dcloudio/uni-cli-shared": "3.0.0-3080920230817001",
+    "@dcloudio/vite-plugin-uni": "4.0.11",
+    "@vue/compiler-sfc": "^3.3.4",
+    "vite": "^4.5.0",
+    "sass": "^1.69.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "18.x"
   }
 }
