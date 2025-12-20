@@ -1,282 +1,326 @@
 <template>
   <view class="assets-page">
     <!-- Balance Card -->
-    <view class="card padding">
-      <view class="text-center">
-        <view class="balance-amount text-white">
-          {{ formattedBalance }} USDT
-        </view>
-        <view class="text-gray" style="font-size: 12px;">
-          {{ $t('total_balance') }}
-        </view>
-      </view>
-
-      <!-- Deposit and Withdraw Buttons -->
-      <view class="wallet-actions-compact">
-        <view class="wallet-action-compact" @click="navigateTo('deposit')">
-          <image src="/static/deposit.png" class="wallet-icon" />
-          <view class="wallet-text-compact">{{ $t('deposit_action') }}</view>
-        </view>
-        <view class="wallet-action-compact" @click="navigateTo('withdraw')">
-          <image src="/static/withdraw.png" class="wallet-icon" />
-          <view class="wallet-text-compact">{{ $t('withdraw_action') }}</view>
-        </view>
-      </view>
-    </view>
+    <div class="balance-card">
+      <div class="balance-amount">{{ formatBalance }} USDT</div>
+      <div class="balance-label">{{ $t('total_balance') }}</div>
+      
+      <!-- Deposit and Withdraw buttons -->
+      <div class="wallet-actions">
+        <div class="wallet-action" @click="goToDeposit">
+          <img src="/static/assets/deposit.png" alt="Deposit">
+          <div class="wallet-text">{{ $t('deposit') }}</div>
+        </div>
+        <div class="wallet-action" @click="goToWithdraw">
+          <img src="/static/assets/withdraw.png" alt="Withdraw">
+          <div class="wallet-text">{{ $t('withdraw') }}</div>
+        </div>
+      </div>
+    </div>
 
     <!-- Transaction History -->
-    <view class="card padding margin-top">
-      <view class="text-white text-bold margin-bottom" style="font-size: 14px; text-align: center;">
-        {{ $t('transaction_history') }}
-      </view>
+    <div class="history-card">
+      <div class="history-title">{{ $t('transaction_history') }}</div>
       
-      <!-- Statistics -->
-      <view class="transaction-categories-compact">
-        <view class="transaction-category-compact">
-          <view class="transaction-category-name-compact">{{ $t('total_earned') }}</view>
-          <view class="transaction-category-amount-compact">{{ stats.totalEarned.toFixed(2) }} USDT</view>
-        </view>
-        <view class="transaction-category-compact">
-          <view class="transaction-category-name-compact">{{ $t('total_deposits') }}</view>
-          <view class="transaction-category-amount-compact">{{ stats.totalDeposits.toFixed(2) }} USDT</view>
-        </view>
-        <view class="transaction-category-compact">
-          <view class="transaction-category-name-compact">{{ $t('total_withdrawals') }}</view>
-          <view class="transaction-category-amount-compact">{{ stats.totalWithdrawals.toFixed(2) }} USDT</view>
-        </view>
-        <view class="transaction-category-compact">
-          <view class="transaction-category-name-compact">{{ $t('referral_income') }}</view>
-          <view class="transaction-category-amount-compact">{{ stats.referralIncome.toFixed(2) }} USDT</view>
-        </view>
-      </view>
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">{{ $t('total_earned') }}</div>
+          <div class="stat-value">{{ formatCurrency(totalEarned) }} USDT</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">{{ $t('total_deposits') }}</div>
+          <div class="stat-value">{{ formatCurrency(totalDeposits) }} USDT</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">{{ $t('total_withdrawals') }}</div>
+          <div class="stat-value">{{ formatCurrency(totalWithdrawals) }} USDT</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">{{ $t('referral_income') }}</div>
+          <div class="stat-value">{{ formatCurrency(referralIncome) }} USDT</div>
+        </div>
+      </div>
       
       <!-- Transaction List -->
-      <view class="transaction-list-compact">
-        <view v-if="loading" class="text-center padding">
+      <div class="transaction-list">
+        <div v-if="loading" class="loading-state">
           <i class="fas fa-spinner fa-spin"></i> {{ $t('loading') }}
-        </view>
+        </div>
         
-        <view v-else-if="transactions.length === 0" class="text-center padding text-gray">
+        <div v-else-if="transactions.length === 0" class="empty-state">
           {{ $t('no_transactions') }}
-        </view>
+        </div>
         
-        <view v-else>
-          <view 
+        <div v-else class="transactions">
+          <div 
             v-for="transaction in transactions" 
             :key="transaction.id"
             class="transaction-item"
           >
-            <view class="transaction-info">
-              <view class="transaction-type">{{ getTransactionType(transaction.type) }}</view>
-              <view class="transaction-date">
-                {{ formatDate(transaction.created_at) }}
-              </view>
-            </view>
-            <view 
-              class="transaction-amount"
-              :class="transaction.amount > 0 ? 'color-up' : 'color-down'"
-            >
-              {{ transaction.amount > 0 ? '+' : '' }}{{ transaction.amount.toFixed(2) }} USDT
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
+            <div class="transaction-info">
+              <div class="transaction-type">{{ getTransactionType(transaction.type) }}</div>
+              <div class="transaction-date">{{ formatDate(transaction.created_at) }}</div>
+            </div>
+            <div :class="['transaction-amount', transaction.amount > 0 ? 'positive' : 'negative']">
+              {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(transaction.amount) }} USDT
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </view>
 </template>
 
-<script>
-import { mapState, mapGetters } from 'vuex'
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { supabase, transactionOperations } from '@/utils/supabase'
+import { t } from '@/utils/translate'
 
-export default {
-  name: 'AssetsPage',
-  data() {
-    return {
-      loading: true,
-      transactions: [],
-      stats: {
-        totalEarned: 0,
-        totalDeposits: 0,
-        totalWithdrawals: 0,
-        referralIncome: 0
-      }
-    }
-  },
-  computed: {
-    ...mapState(['user']),
-    ...mapGetters(['formattedBalance', 'isAuthenticated'])
-  },
-  mounted() {
-    this.loadTransactions()
-  },
-  methods: {
-    navigateTo(page) {
-      uni.navigateTo({
-        url: `/pages/${page}/index`
-      })
-    },
+const router = useRouter()
+const userStore = useUserStore()
+
+// Data
+const transactions = ref([])
+const loading = ref(true)
+
+// Stats
+const totalEarned = ref(0)
+const totalDeposits = ref(0)
+const totalWithdrawals = ref(0)
+const referralIncome = ref(0)
+
+const userBalance = computed(() => {
+  return userStore.currentUser?.balance || 0
+})
+
+const formatBalance = computed(() => {
+  return userBalance.value.toFixed(2)
+})
+
+// Helper functions
+const formatCurrency = (amount) => {
+  return Math.abs(amount).toFixed(2)
+}
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+}
+
+const getTransactionType = (type) => {
+  const types = {
+    'deposit': t('transaction_type_deposit'),
+    'withdrawal': t('transaction_type_withdrawal'),
+    'quantification': t('transaction_type_quantification'),
+    'referral': t('transaction_type_referral'),
+    'registration_bonus': t('transaction_type_registration_bonus')
+  }
+  return types[type] || type
+}
+
+// Navigation
+const goToDeposit = () => {
+  router.push('/deposit')
+}
+
+const goToWithdraw = () => {
+  router.push('/withdraw')
+}
+
+// Load transactions
+const loadTransactions = async () => {
+  if (!userStore.currentUser) return
+  
+  loading.value = true
+  
+  try {
+    // Load transactions
+    const { data, error } = await transactionOperations.getUserTransactions(
+      userStore.currentUser.id,
+      20
+    )
     
-    async loadTransactions() {
-      if (!this.user) return
-      
-      this.loading = true
-      
-      try {
-        const { data, error } = await window.supabase
-          .from('transactions')
-          .select('*')
-          .eq('user_id', this.user.id)
-          .order('created_at', { ascending: false })
-          .limit(20)
-          
-        if (error) throw error
-        
-        this.transactions = data || []
-        this.calculateStats(data || [])
-      } catch (error) {
-        console.error('Error loading transactions:', error)
-        this.$showAlert(this.$t('error_loading'))
-      } finally {
-        this.loading = false
-      }
-    },
+    if (error) throw error
     
-    calculateStats(transactions) {
-      const stats = {
-        totalEarned: 0,
-        totalDeposits: 0,
-        totalWithdrawals: 0,
-        referralIncome: 0
-      }
-      
-      transactions.forEach(transaction => {
-        const amount = transaction.amount
-        
-        switch (transaction.type) {
-          case 'deposit':
-            stats.totalDeposits += amount
-            break
-          case 'withdrawal':
-            stats.totalWithdrawals += Math.abs(amount)
-            break
-          case 'referral':
-            stats.referralIncome += amount
-            stats.totalEarned += amount
-            break
-          case 'quantification':
-          case 'registration_bonus':
-            stats.totalEarned += amount
-            break
-        }
-      })
-      
-      this.stats = stats
-    },
+    transactions.value = data || []
     
-    getTransactionType(type) {
-      const types = {
-        'deposit': this.$t('transaction_type_deposit'),
-        'withdrawal': this.$t('transaction_type_withdrawal'),
-        'quantification': this.$t('transaction_type_quantification'),
-        'referral': this.$t('transaction_type_referral'),
-        'registration_bonus': this.$t('transaction_type_registration_bonus')
-      }
-      return types[type] || type
-    },
+    // Calculate stats
+    let earned = 0
+    let deposits = 0
+    let withdrawals = 0
+    let referral = 0
     
-    formatDate(dateString) {
-      const date = new Date(dateString)
-      const formattedDate = date.toLocaleDateString()
-      const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      return `${formattedDate} ${formattedTime}`
-    }
+    transactions.value.forEach(transaction => {
+      const amount = transaction.amount
+      
+      switch (transaction.type) {
+        case 'deposit':
+          deposits += amount
+          break
+        case 'withdrawal':
+          withdrawals += Math.abs(amount)
+          break
+        case 'referral':
+          referral += amount
+          earned += amount
+          break
+        case 'quantification':
+        case 'registration_bonus':
+          earned += amount
+          break
+      }
+    })
+    
+    totalEarned.value = earned
+    totalDeposits.value = deposits
+    totalWithdrawals.value = withdrawals
+    referralIncome.value = referral
+    
+  } catch (error) {
+    console.error('Error loading transactions:', error)
+    window.showCustomAlert(t('error_loading_transactions'))
+  } finally {
+    loading.value = false
   }
 }
+
+onMounted(() => {
+  loadTransactions()
+})
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .assets-page {
-  padding-bottom: 100rpx;
+  padding: 15px;
+  padding-bottom: 80px;
+}
+
+/* Balance Card */
+.balance-card {
+  background: linear-gradient(135deg, #4e7771, #36454f);
+  border-radius: 15px;
+  padding: 25px 20px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(78, 119, 113, 0.3);
 }
 
 .balance-amount {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: #f9ae3d;
-  margin: 20rpx 0;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
-.wallet-actions-compact {
+.balance-label {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+.wallet-actions {
   display: flex;
   justify-content: center;
-  gap: 40rpx;
-  margin-top: 30rpx;
+  gap: 30px;
 }
 
-.wallet-action-compact {
+.wallet-action {
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:active {
-    transform: scale(0.95);
-  }
+  transition: transform 0.3s;
 }
 
-.wallet-icon {
-  width: 60rpx;
-  height: 60rpx;
-  margin-bottom: 10rpx;
+.wallet-action:hover {
+  transform: translateY(-2px);
 }
 
-.wallet-text-compact {
-  color: white;
-  font-size: 24rpx;
-  font-weight: bold;
+.wallet-action img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
 }
 
-.transaction-categories-compact {
+.wallet-text {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* History Card */
+.history-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.history-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Stats Grid */
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15rpx;
-  margin-bottom: 30rpx;
+  gap: 15px;
+  margin-bottom: 25px;
 }
 
-.transaction-category-compact {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8rpx;
-  padding: 20rpx;
+.stat-item {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
   text-align: center;
 }
 
-.transaction-category-name-compact {
-  color: #cccccc;
-  font-size: 22rpx;
-  margin-bottom: 10rpx;
+.stat-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
 }
 
-.transaction-category-amount-compact {
-  color: white;
-  font-size: 24rpx;
-  font-weight: bold;
+.stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
 }
 
-.transaction-list-compact {
-  max-height: 500rpx;
+/* Transaction List */
+.transaction-list {
+  max-height: 400px;
   overflow-y: auto;
+}
+
+.loading-state, .empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.loading-state i {
+  margin-right: 8px;
+  color: #4e7771;
 }
 
 .transaction-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8rpx;
-  margin-bottom: 10rpx;
-  border-left: 5rpx solid;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
 }
 
 .transaction-info {
@@ -284,18 +328,34 @@ export default {
 }
 
 .transaction-type {
-  font-weight: bold;
-  font-size: 26rpx;
-  margin-bottom: 5rpx;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
 }
 
 .transaction-date {
-  color: #cccccc;
-  font-size: 22rpx;
+  font-size: 11px;
+  color: #999;
 }
 
 .transaction-amount {
-  font-weight: bold;
-  font-size: 28rpx;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.transaction-amount.positive {
+  color: #52c41a;
+}
+
+.transaction-amount.negative {
+  color: #ff4d4f;
+}
+
+@media (min-width: 768px) {
+  .assets-page {
+    max-width: 375px;
+    margin: 0 auto;
+  }
 }
 </style>
