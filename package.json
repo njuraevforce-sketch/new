@@ -7,11 +7,10 @@
   "scripts": {
     "dev:h5": "uni dev -p h5",
     "build:h5": "uni build -p h5",
-    "preview": "vite preview",
     "deploy": "npm run build:h5"
   },
   "dependencies": {
-    "@dcloudio/uni-app": "^3.5.0",
+    "@dcloudio/uni-app": "2.0.2-4070620250821001",
     "@supabase/supabase-js": "^2.38.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
@@ -20,7 +19,7 @@
     "dayjs": "^1.11.10"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "^3.5.0",
+    "@dcloudio/uni-cli-shared": "2.0.2-4070620250821001",
     "@dcloudio/vite-plugin-uni": "^4.0.11",
     "@vue/compiler-sfc": "^3.3.4",
     "vite": "^4.5.0",
