@@ -5,8 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "uni -p",
-    "build": "uni build",
+    "dev": "uni -p h5",
+    "build": "uni build -p h5",
     "preview": "uni preview",
     "deploy": "npm run build",
     "serve": "vite preview --port 5000"
