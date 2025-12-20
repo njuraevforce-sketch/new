@@ -3,142 +3,45 @@
     {
       "path": "pages/home/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false,
-        "onReachBottomDistance": 50
+        "navigationBarTitleText": "Home",
+        "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/get/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
+        "navigationBarTitleText": "Get",
         "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/assets/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
+        "navigationBarTitleText": "Assets",
         "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/mine/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
+        "navigationBarTitleText": "Mine",
         "enablePullDownRefresh": false
       }
     },
     {
       "path": "pages/login/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#36454f",
-        "disableScroll": true,
-        "enablePullDownRefresh": false
+        "navigationBarTitleText": "Login",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/register/index",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#36454f",
-        "disableScroll": true,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/company/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Company",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/invite/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Invite",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/team/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Team",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/rules/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Rules",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/withdraw/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Withdraw",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/deposit/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Deposit",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/admin/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "Admin Panel",
-        "backgroundColor": "#f5f5f5",
-        "disableScroll": false,
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/backend/index",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "",
-        "backgroundColor": "#36454f",
-        "disableScroll": true,
-        "enablePullDownRefresh": false
+        "navigationBarTitleText": "Register",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
       }
     }
   ],
@@ -146,64 +49,41 @@
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "GLY",
     "navigationBarBackgroundColor": "#36454f",
-    "backgroundColor": "#f5f5f5",
-    "backgroundColorTop": "#f5f5f5",
-    "backgroundColorBottom": "#f5f5f5",
+    "backgroundColor": "#36454f",
     "app-plus": {
-      "background": "#f5f5f5",
-      "bounce": "vertical",
-      "softinputNavBar": "auto"
+      "background": "#36454f"
     }
   },
   "tabBar": {
-    "color": "#666666",
+    "color": "#8a8a8a",
     "selectedColor": "#4e7771",
+    "backgroundColor": "#1a1a2e",
     "borderStyle": "white",
-    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/home/index",
-        "iconPath": "static/assets/home.png",
-        "selectedIconPath": "static/assets/home.png",
-        "text": "Home"
+        "text": "Home",
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home-active.png"
       },
       {
         "pagePath": "pages/get/index",
-        "iconPath": "static/assets/get.png",
-        "selectedIconPath": "static/assets/get.png",
-        "text": "Get"
+        "text": "Get",
+        "iconPath": "static/get.png",
+        "selectedIconPath": "static/get-active.png"
       },
       {
         "pagePath": "pages/assets/index",
-        "iconPath": "static/assets/assets.png",
-        "selectedIconPath": "static/assets/assets.png",
-        "text": "Assets"
+        "text": "Assets",
+        "iconPath": "static/assets.png",
+        "selectedIconPath": "static/assets-active.png"
       },
       {
         "pagePath": "pages/mine/index",
-        "iconPath": "static/assets/mine.png",
-        "selectedIconPath": "static/assets/mine.png",
-        "text": "Mine"
-      }
-    ],
-    "position": "bottom",
-    "midButton": false
-  },
-  "condition": {
-    "current": 0,
-    "list": [
-      {
-        "name": "Home",
-        "path": "pages/home/index"
+        "text": "Mine",
+        "iconPath": "static/mine.png",
+        "selectedIconPath": "static/mine-active.png"
       }
     ]
-  },
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^@components/.*": "@/components/.*",
-      "^@pages/.*": "@/pages/.*"
-    }
-  },
-  "uniIdRouter": {}
+  }
 }
