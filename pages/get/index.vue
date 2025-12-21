@@ -1,291 +1,324 @@
 <template>
   <view class="get-page">
-    <!-- UTC Time -->
-    <div class="utc-time-section">
-      <div class="utc-time" id="utc-time">
+    <view class="card padding">
+      <!-- UTC Time -->
+      <view class="utc-time">
         UTC: {{ utcTime }}
-      </div>
-    </div>
-    
-    <!-- Auto Quantification -->
-    <div class="quantum-section">
-      <div class="signals-container">
-        <div 
-          v-for="n in 3" 
-          :key="n" 
-          :class="['signal', { 'used': n > signalsAvailable }]"
-        ></div>
-      </div>
-      <div class="signals-text">
-        {{ signalsText }}
-      </div>
+      </view>
       
-      <button 
-        class="quant-btn" 
-        @click="startQuantification"
-        :disabled="quantLoading || signalsAvailable <= 0"
-      >
-        <i v-if="quantLoading" class="fas fa-spinner fa-spin"></i>
-        {{ quantLoading ? $t('processing_quantification') : $t('auto_quantification') }}
-      </button>
-    </div>
-
-    <!-- Quantification process -->
-    <div v-if="showProcess" class="quantum-process">
-      <div 
-        v-for="(step, index) in processSteps" 
-        :key="index"
-        :class="['process-step', { 'active': currentStep >= index }]"
-      >
-        {{ step }}
-      </div>
-      <div v-if="quantResult" class="profit-result">
-        {{ $t('profit') }} +{{ quantResult.profit.toFixed(2) }} USDT
-      </div>
-    </div>
-
-    <!-- VIP cards -->
-    <div class="vip-section">
-      <div class="section-title">{{ $t('vip_levels') }}</div>
-      
-      <!-- VIP Carousel -->
-      <div class="vip-carousel-container">
-        <div class="vip-track" :style="{ transform: `translateX(-${currentVipIndex * 100}%)` }">
-          <div 
-            v-for="level in 6" 
-            :key="level"
-            class="vip-slide"
-          >
-            <div class="vip-card">
-              <div class="vip-title">VIP{{ level }}</div>
-              <div class="vip-status">
-                <i :class="level <= userVipLevel ? 'fas fa-lock-open' : 'fas fa-lock'"></i>
-                <span>{{ level <= userVipLevel ? $t('unlocked') : $t('locked') }}</span>
-              </div>
-              <div class="vip-image">
-                <img :src="`/static/assets/vipicon${level}.png`" :alt="`VIP ${level}`">
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Auto Quantification -->
+      <view class="quantum-action">
+        <view class="signals">
+          <view 
+            v-for="n in 3" 
+            :key="n"
+            class="signal"
+            :class="{'used': n > userStore.signalsAvailable}"
+          ></view>
+        </view>
+        <view style="text-align: center; color: #ccc; font-size: 14px; margin-bottom: 15px;">
+          {{ userStore.signalsAvailable }} quantum signals available
+        </view>
         
-        <div class="vip-indicators">
-          <span 
-            v-for="level in 6" 
-            :key="level"
-            :class="['vip-indicator', { 'active': currentVipIndex === level - 1 }]"
-            @click="goToVipLevel(level - 1)"
-          ></span>
-        </div>
-      </div>
-      
-      <!-- VIP Description -->
-      <div class="vip-description">
-        {{ vipDescriptions[currentVipIndex] }}
-      </div>
-      
-      <!-- VIP Details -->
-      <div class="vip-details">
-        <div class="detail-item">
-          <span class="detail-label">{{ $t('daily_percent') }}:</span>
-          <span class="detail-value">{{ vipDetails[currentVipIndex].percent }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">{{ $t('deposit_range') }}:</span>
-          <span class="detail-value">{{ vipDetails[currentVipIndex].range }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">{{ $t('signals_count') }}:</span>
-          <span class="detail-value">{{ vipDetails[currentVipIndex].signals }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">{{ $t('referrals_required') }}:</span>
-          <span class="detail-value">{{ vipDetails[currentVipIndex].refs }}</span>
-        </div>
-      </div>
-    </div>
+        <button 
+          class="quant-btn" 
+          @click="startQuantification"
+          :disabled="userStore.signalsAvailable <= 0 || processing"
+        >
+          <i v-if="processing" class="fas fa-spinner fa-spin"></i>
+          {{ processing ? 'Processing...' : 'AUTO QUANTIFICATION' }}
+        </button>
+      </view>
+
+      <!-- Quantification process -->
+      <view class="quantum-process" v-if="showProcess">
+        <view 
+          v-for="(step, index) in processSteps" 
+          :key="index"
+          class="process-step"
+          :class="{'active': currentStep === index}"
+        >
+          {{ step.text }}
+        </view>
+        <view class="process-step" v-if="profitResult" style="color: #52c41a; font-weight: bold;">
+          Profit +{{ profitResult.toFixed(2) }} USDT
+        </view>
+      </view>
+
+      <!-- VIP cards -->
+      <view class="vip-section">
+        <view class="section-title">VIP Levels</view>
+        
+        <!-- VIP Carousel -->
+        <view class="custom-vip-carousel" @touchstart="onTouchStart" @touchend="onTouchEnd">
+          <view class="carousel-track" :style="{transform: `translateY(-${currentVipIndex * 130}px)`}">
+            <view 
+              v-for="(vip, index) in vipLevels" 
+              :key="index"
+              class="vip-slide"
+              :class="{'active': currentVipIndex === index}"
+              :data-vip="vip.level"
+            >
+              <view class="vip-card" :style="{backgroundImage: `url('/static/vip${vip.level}.png')`}">
+                <view class="vip-title">VIP{{ vip.level }}</view>
+                <view class="vip-status">
+                  <i :class="isVipUnlocked(vip.level) ? 'fas fa-lock-open' : 'fas fa-lock'" 
+                     :style="{color: isVipUnlocked(vip.level) ? '#4CAF50' : '#cccccc'}"></i>
+                  <span>{{ isVipUnlocked(vip.level) ? 'Unlocked' : 'Locked' }}</span>
+                </view>
+                <view class="vip-image">
+                  <image :src="`/static/vipicon${vip.level}.png`" mode="aspectFit"></image>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- Описание VIP уровня -->
+        <view class="vip-description">
+          {{ vipLevels[currentVipIndex]?.description }}
+        </view>
+        
+        <!-- Детали VIP уровня -->
+        <view class="vip-details">
+          <view class="details-content">
+            <view class="detail-item">
+              <span class="detail-label">Daily Percent:</span>
+              <span class="detail-value">{{ vipLevels[currentVipIndex]?.percent }}</span>
+            </view>
+            <view class="detail-item">
+              <span class="detail-label">Deposit Range:</span>
+              <span class="detail-value">{{ vipLevels[currentVipIndex]?.range }}</span>
+            </view>
+            <view class="detail-item">
+              <span class="detail-label">Signals:</span>
+              <span class="detail-value">{{ vipLevels[currentVipIndex]?.signals }}</span>
+            </view>
+            <view class="detail-item">
+              <span class="detail-label">Referrals Required:</span>
+              <span class="detail-value">{{ vipLevels[currentVipIndex]?.refs }}</span>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useUserStore } from '@/stores/user'
-import { t } from '@/utils/translate'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../../store/user'
+import { performQuantification } from '../../utils/api'
 
+const router = useRouter()
 const userStore = useUserStore()
 
-// UTC Time
-const utcTime = ref('')
-const utcInterval = ref(null)
-
-// Quantification
-const signalsAvailable = ref(3)
-const quantLoading = ref(false)
+const utcTime = ref('Loading...')
+const currentVipIndex = ref(0)
 const showProcess = ref(false)
+const processing = ref(false)
 const currentStep = ref(-1)
-const quantResult = ref(null)
+const profitResult = ref(null)
+let utcInterval = null
+let touchStartY = 0
+let touchEndY = 0
 
-const processSteps = ref([
-  t('analyzing_market'),
-  t('calculating_quantum'),
-  t('executing_trades'),
-  t('quantum_complete')
+const vipLevels = ref([
+  {
+    level: 1,
+    description: 'VIP 1: Basic level with 2.2% daily return',
+    percent: '2.2%',
+    range: '0-299 USDT',
+    signals: '3 signals',
+    refs: '0 refs'
+  },
+  {
+    level: 2,
+    description: 'VIP 2: 2.8% daily return',
+    percent: '2.8%',
+    range: '300-1000 USDT',
+    signals: '3 signals',
+    refs: '2 refs'
+  },
+  {
+    level: 3,
+    description: 'VIP 3: 3.5% daily return',
+    percent: '3.5%',
+    range: '1000-3500 USDT',
+    signals: '3 signals',
+    refs: '5 refs'
+  },
+  {
+    level: 4,
+    description: 'VIP 4: 4.0% daily return',
+    percent: '4.0%',
+    range: '3500-6000 USDT',
+    signals: '3 signals',
+    refs: '8 refs'
+  },
+  {
+    level: 5,
+    description: 'VIP 5: 5.0% daily return',
+    percent: '5.0%',
+    range: '6000-12000 USDT',
+    signals: '3 signals',
+    refs: '15 refs'
+  },
+  {
+    level: 6,
+    description: 'VIP 6: 6.0% daily return',
+    percent: '6.0%',
+    range: '12000-20000 USDT',
+    signals: '3 signals',
+    refs: '25 refs'
+  }
 ])
 
-const signalsText = computed(() => {
-  return `${signalsAvailable.value} ${t('quantum_signals_available')}`
-})
+const processSteps = ref([
+  { text: 'Analyzing market conditions...', duration: 2000 },
+  { text: 'Calculating quantum probabilities...', duration: 2500 },
+  { text: 'Executing quantum trades...', duration: 3000 },
+  { text: 'Quantum quantification complete!', duration: 1500 }
+])
 
-// VIP Carousel
-const currentVipIndex = ref(0)
-const userVipLevel = computed(() => userStore.currentUser?.vip_level || 1)
-
-const vipDescriptions = [
-  t('vip_description_1'),
-  t('vip_description_2'),
-  t('vip_description_3'),
-  t('vip_description_4'),
-  t('vip_description_5'),
-  t('vip_description_6')
-]
-
-const vipDetails = [
-  { percent: '2.2%', range: '0-299 USDT', signals: '3 signals', refs: '0 refs' },
-  { percent: '2.8%', range: '300-1000 USDT', signals: '3 signals', refs: '2 refs' },
-  { percent: '3.5%', range: '1000-3500 USDT', signals: '3 signals', refs: '5 refs' },
-  { percent: '4.0%', range: '3500-6000 USDT', signals: '3 signals', refs: '8 refs' },
-  { percent: '5.0%', range: '6000-12000 USDT', signals: '3 signals', refs: '15 refs' },
-  { percent: '6.0%', range: '12000-20000 USDT', signals: '3 signals', refs: '25 refs' }
-]
-
-// Update UTC Time
-const updateUTCTime = () => {
-  const now = new Date()
-  utcTime.value = now.toUTCString().split(' ')[4]
+function isVipUnlocked(level) {
+  return level <= userStore.vipLevel
 }
 
-// Quantification
-const startQuantification = async () => {
-  if (!userStore.currentUser) {
-    window.showCustomAlert(t('please_login'))
+function updateUTCTime() {
+  const now = new Date()
+  utcTime.value = `UTC: ${now.toUTCString().split(' ')[4]}`
+}
+
+function onTouchStart(e) {
+  touchStartY = e.touches[0].clientY
+}
+
+function onTouchEnd(e) {
+  touchEndY = e.changedTouches[0].clientY
+  const diff = touchEndY - touchStartY
+  
+  if (Math.abs(diff) > 40) {
+    if (diff > 0) {
+      // Swipe down - previous slide
+      if (currentVipIndex.value > 0) {
+        currentVipIndex.value--
+      }
+    } else {
+      // Swipe up - next slide
+      if (currentVipIndex.value < vipLevels.value.length - 1) {
+        currentVipIndex.value++
+      }
+    }
+  }
+}
+
+async function startQuantification() {
+  if (!userStore.isLoggedIn) {
+    uni.showToast({
+      title: 'Please login first',
+      icon: 'none'
+    })
     return
   }
   
-  if (signalsAvailable.value <= 0) {
-    window.showCustomAlert(t('no_signals'))
+  if (userStore.signalsAvailable <= 0) {
+    uni.showToast({
+      title: 'No signals available',
+      icon: 'none'
+    })
     return
   }
   
-  quantLoading.value = true
+  processing.value = true
   showProcess.value = true
-  currentStep.value = -1
-  quantResult.value = null
+  profitResult.value = null
   
-  // Show process steps
+  // Run process animation
   for (let i = 0; i < processSteps.value.length; i++) {
     currentStep.value = i
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await new Promise(resolve => setTimeout(resolve, processSteps.value[i].duration))
   }
   
-  // Perform quantification
+  // Perform actual quantification
   try {
-    const result = await userStore.performQuantification()
+    const result = await performQuantification(userStore.userId)
     
     if (result.success) {
-      quantResult.value = result
-      signalsAvailable.value = result.signals_left
+      profitResult.value = result.profit
+      
+      // Update user store
+      userStore.user.balance += result.profit
+      userStore.user.signals_available = result.signals_left
+      
+      // Update VIP level
+      await userStore.updateVipLevel()
       
       // Show success message
-      window.showCustomAlert(
-        t('quantification_successful', null, { profit: result.profit.toFixed(2) })
-      )
+      setTimeout(() => {
+        uni.showToast({
+          title: `Quantification successful! Profit: ${result.profit.toFixed(2)} USDT`,
+          icon: 'success'
+        })
+        
+        // Reset process
+        showProcess.value = false
+        currentStep.value = -1
+        processing.value = false
+      }, 2000)
     } else {
-      window.showCustomAlert(result.error)
+      uni.showToast({
+        title: result.message,
+        icon: 'none'
+      })
+      showProcess.value = false
+      processing.value = false
     }
   } catch (error) {
-    window.showCustomAlert(t('server_error'))
-  } finally {
-    quantLoading.value = false
-    
-    // Hide process after 3 seconds
-    setTimeout(() => {
-      showProcess.value = false
-      currentStep.value = -1
-      quantResult.value = null
-    }, 3000)
-  }
-}
-
-// VIP Carousel
-const goToVipLevel = (index) => {
-  currentVipIndex.value = index
-}
-
-// Load user data
-const loadUserData = async () => {
-  if (userStore.currentUser) {
-    signalsAvailable.value = userStore.currentUser.signals_available
-    await userStore.checkAndUpdateSignals()
-    await userStore.updateVipLevel()
+    uni.showToast({
+      title: 'Quantification error',
+      icon: 'none'
+    })
+    showProcess.value = false
+    processing.value = false
   }
 }
 
 onMounted(() => {
-  // Start UTC time update
   updateUTCTime()
-  utcInterval.value = setInterval(updateUTCTime, 1000)
+  utcInterval = setInterval(updateUTCTime, 1000)
   
-  // Load user data
-  loadUserData()
-  
-  // Auto-rotate VIP carousel
-  const vipInterval = setInterval(() => {
-    currentVipIndex.value = (currentVipIndex.value + 1) % 6
-  }, 5000)
-  
-  onUnmounted(() => {
-    if (utcInterval.value) clearInterval(utcInterval.value)
-    if (vipInterval) clearInterval(vipInterval)
-  })
+  // Set current VIP index based on user's VIP level
+  currentVipIndex.value = Math.max(0, userStore.vipLevel - 1)
+})
+
+onUnmounted(() => {
+  if (utcInterval) clearInterval(utcInterval)
 })
 </script>
 
 <style scoped>
 .get-page {
-  padding: 15px;
   padding-bottom: 80px;
 }
 
-/* UTC Time */
-.utc-time-section {
-  margin-bottom: 20px;
-}
-
 .utc-time {
-  background: linear-gradient(135deg, #36454f, #5a6b76);
-  color: white;
-  padding: 10px 15px;
-  border-radius: 10px;
   text-align: center;
+  color: #ccc;
   font-size: 14px;
-  font-weight: 500;
-}
-
-/* Quantum Section */
-.quantum-section {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
   margin-bottom: 20px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.signals-container {
+.quantum-action {
+  text-align: center;
+}
+
+.signals {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .signal {
@@ -293,228 +326,165 @@ onMounted(() => {
   height: 30px;
   border-radius: 50%;
   background: #4e7771;
-  transition: all 0.3s;
-}
-
-.signal.used {
-  background: #666;
-  opacity: 0.5;
-}
-
-.signals-text {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 20px;
+  
+  &.used {
+    background: #666;
+  }
 }
 
 .quant-btn {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #52c41a, #389e0d);
+  background: linear-gradient(135deg, #4e7771 0%, #52c41a 100%);
   color: white;
   border: none;
+  padding: 15px 30px;
   border-radius: 25px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(78, 119, 113, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
-.quant-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
-}
-
-.quant-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Quantum Process */
 .quantum-process {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-top: 20px;
 }
 
 .process-step {
   padding: 10px;
-  margin-bottom: 10px;
-  border-left: 3px solid transparent;
-  font-size: 14px;
-  color: #666;
-  opacity: 0.5;
-  transition: all 0.3s;
-}
-
-.process-step.active {
-  border-left-color: #4e7771;
-  color: #333;
-  opacity: 1;
-  padding-left: 15px;
-}
-
-.profit-result {
-  padding: 10px;
-  background: rgba(82, 196, 26, 0.1);
-  border-radius: 8px;
-  color: #52c41a;
-  font-weight: 600;
-  font-size: 16px;
   text-align: center;
-  margin-top: 10px;
-  animation: fadeIn 0.5s;
+  color: #ccc;
+  font-size: 14px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  
+  &.active {
+    color: #52c41a;
+    opacity: 1;
+    font-weight: bold;
+  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* VIP Section */
 .vip-section {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-top: 30px;
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
   text-align: center;
 }
 
-.vip-carousel-container {
+.custom-vip-carousel {
   position: relative;
+  height: 400px;
   overflow: hidden;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  background: #f5f5f5;
+  margin: 20px 0;
 }
 
-.vip-track {
-  display: flex;
-  transition: transform 0.5s ease;
+.carousel-track {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .vip-slide {
-  flex: 0 0 100%;
-  padding: 15px;
+  height: 130px;
+  margin: 10px 0;
+  transition: all 0.3s ease;
+  
+  &.active {
+    transform: scale(1.05);
+    z-index: 2;
+  }
 }
 
 .vip-card {
-  background: linear-gradient(135deg, #4e7771, #36454f);
+  height: 100%;
   border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  position: relative;
-  min-height: 180px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.vip-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 10px;
-}
-
-.vip-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  color: white;
-  font-size: 12px;
-  margin-bottom: 15px;
-}
-
-.vip-status i {
-  font-size: 14px;
-}
-
-.vip-image {
-  width: 80px;
-  height: 80px;
-}
-
-.vip-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.vip-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 15px;
-}
-
-.vip-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ddd;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.vip-indicator.active {
-  width: 20px;
-  border-radius: 4px;
-  background: #4e7771;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  
+  .vip-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  }
+  
+  .vip-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  }
+  
+  .vip-image {
+    width: 60px;
+    height: 60px;
+    
+    image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
 }
 
 .vip-description {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 20px;
   text-align: center;
-  padding: 0 10px;
+  color: #ccc;
+  font-size: 14px;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
 
 .vip-details {
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 15px;
-}
-
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.detail-item:last-child {
-  border-bottom: none;
-}
-
-.detail-label {
-  color: #666;
-  font-size: 13px;
-}
-
-.detail-value {
-  color: #333;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-@media (min-width: 768px) {
-  .get-page {
-    max-width: 375px;
-    margin: 0 auto;
+  .details-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+  
+  .detail-label {
+    font-size: 12px;
+    color: #ccc;
+  }
+  
+  .detail-value {
+    font-size: 14px;
+    font-weight: 600;
   }
 }
 </style>
