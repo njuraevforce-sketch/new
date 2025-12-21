@@ -1,127 +1,132 @@
 <template>
-  <view class="login-page">
-    <div class="language-globe-btn" @click="showLanguageModal">
-      <i class="fas fa-globe"></i>
-    </div>
-    
-    <div class="auth-header">
-      <img src="/static/assets/logo.png" alt="GLY" class="auth-logo">
-      <h2 class="auth-title">{{ $t('welcome') }}</h2>
-      <p class="auth-subtitle">{{ $t('welcome_to_gly') }}</p>
-    </div>
-    
-    <div class="auth-card">
+  <view class="login-page auth-page">
+    <view class="card padding" style="margin-top: 20px; background: transparent; box-shadow: none; position: relative;">
+      <!-- Language button in top right -->
+      <view class="language-globe-btn" @click="showLanguageModal">
+        <i class="fas fa-globe"></i>
+      </view>
+      
+      <view style="text-align: left; margin-bottom: 30px; display: flex; align-items: center; margin-top: 20px;">
+        <image src="/static/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-right: 20px;"></image>
+        <view>
+          <h2 style="color: white; margin-bottom: 5px; font-size: 28px;">Welcome</h2>
+          <p style="color: #ccc; font-size: 16px;">Welcome to GLY</p>
+        </view>
+      </view>
+      
       <form @submit.prevent="handleLogin">
-        <div class="input-group">
+        <view class="input-container">
           <input 
             type="text" 
-            v-model="username" 
-            :placeholder="$t('username')" 
-            class="auth-input"
-            required
+            v-model="form.username"
+            placeholder="Username"
+            class="input-line"
           >
-        </div>
+        </view>
         
-        <div class="input-group password-group">
+        <view class="input-container" style="position: relative;">
           <input 
-            :type="showPassword ? 'text' : 'password'" 
-            v-model="password" 
-            :placeholder="$t('password')" 
-            class="auth-input"
-            required
+            :type="showPassword ? 'text' : 'password'"
+            v-model="form.password"
+            placeholder="Password"
+            class="input-line"
+            style="padding-right: 40px;"
           >
           <i 
-            :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" 
-            class="password-toggle"
+            class="fas password-toggle"
+            :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #52c41a; cursor: pointer; z-index: 10;"
             @click="showPassword = !showPassword"
           ></i>
-        </div>
+        </view>
         
         <button 
           type="submit" 
-          class="auth-btn" 
+          class="pro-btn full-width"
           :disabled="loading"
         >
           <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-          {{ loading ? $t('loading') : $t('login') }}
+          {{ loading ? 'Loading...' : 'Login' }}
         </button>
       </form>
       
-      <div class="auth-links">
-        <p>
-          {{ $t('no_account') }}
-          <a href="#" @click="goToRegister">{{ $t('register_now') }}</a>
+      <view style="text-align: center; margin-top: 20px;">
+        <p style="color: #ccc;">
+          Don't have an account? 
+          <text @click="goToRegister" style="color: #52c41a; cursor: pointer;">Register now!</text>
         </p>
-      </div>
+      </view>
       
-      <div v-if="error" class="error-message">
+      <view v-if="error" class="error show">
         {{ error }}
-      </div>
-    </div>
+      </view>
+    </view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { t } from '@/utils/translate'
+import { useUserStore } from '../../store/user'
 
 const router = useRouter()
 const userStore = useUserStore()
+const showCustomAlert = inject('showCustomAlert')
+const showLanguageModal = inject('showLanguageModal')
 
-const username = ref('')
-const password = ref('')
+const form = ref({
+  username: '',
+  password: ''
+})
 const showPassword = ref(false)
 const loading = ref(false)
 const error = ref('')
 
-const handleLogin = async () => {
-  if (!username.value || !password.value) {
-    error.value = t('validation_required')
+async function handleLogin() {
+  if (!form.value.username || !form.value.password) {
+    error.value = 'All fields are required'
     return
   }
-  
+
   loading.value = true
   error.value = ''
-  
+
   try {
-    const result = await userStore.login(username.value, password.value)
+    const result = await userStore.login(form.value.username, form.value.password)
     
     if (result.success) {
-      window.showCustomAlert(t('login_success'))
-      router.push('/home')
+      showCustomAlert('Login successful!')
+      router.push({ name: 'home' })
     } else {
       error.value = result.error
     }
   } catch (err) {
-    error.value = t('server_error')
+    error.value = 'Login error'
+    console.error('Login error:', err)
   } finally {
     loading.value = false
   }
 }
 
-const goToRegister = () => {
-  router.push('/register')
-}
-
-const showLanguageModal = () => {
-  window.showLanguageModal()
+function goToRegister() {
+  router.push({ name: 'register' })
 }
 </script>
 
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #36454f 0%, #2c3e50 100%);
-  padding: 40px 20px;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .language-globe-btn {
   position: absolute;
   top: 20px;
   right: 20px;
+  z-index: 10;
   width: 40px;
   height: 40px;
   background: rgba(255, 255, 255, 0.2);
@@ -129,150 +134,16 @@ const showLanguageModal = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 18px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  z-index: 10;
-}
-
-.auth-header {
-  text-align: center;
-  margin-bottom: 40px;
-  margin-top: 40px;
-}
-
-.auth-logo {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-}
-
-.auth-title {
-  color: white;
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-
-.auth-subtitle {
-  color: #ccc;
-  font-size: 16px;
-}
-
-.auth-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  padding: 30px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.input-group {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.auth-input {
-  width: 100%;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  transition: all 0.3s;
-}
-
-.auth-input:focus {
-  outline: none;
-  border-color: #4e7771;
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.auth-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.password-group {
-  position: relative;
-}
-
-.password-toggle {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #4e7771;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-.auth-btn {
-  width: 100%;
-  padding: 15px;
-  background: #4e7771;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 10px;
-}
-
-.auth-btn:hover:not(:disabled) {
-  background: #5a8a84;
-  transform: translateY(-2px);
-}
-
-.auth-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.auth-links {
-  margin-top: 25px;
-  text-align: center;
-}
-
-.auth-links p {
-  color: #ccc;
-  font-size: 14px;
-}
-
-.auth-links a {
-  color: #4e7771;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.auth-links a:hover {
-  text-decoration: underline;
-}
-
-.error-message {
-  margin-top: 15px;
-  padding: 10px;
-  background: rgba(255, 77, 79, 0.2);
-  border: 1px solid rgba(255, 77, 79, 0.4);
-  border-radius: 6px;
-  color: #ff6b6b;
-  font-size: 14px;
-  text-align: center;
-}
-
-@media (min-width: 768px) {
-  .login-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   
-  .auth-card {
-    width: 100%;
-    max-width: 400px;
+  i {
+    color: white;
+    font-size: 18px;
   }
+}
+
+.full-width {
+  width: 100%;
 }
 </style>
