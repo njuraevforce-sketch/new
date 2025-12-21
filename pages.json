@@ -1,99 +1,39 @@
-{
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-      "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+import { createSSRApp } from 'vue'
+import App from './App.vue'
+import { createPinia } from 'pinia'
+import { initSupabase } from './utils/supabase'
+import { initTranslate } from './utils/translate'
+import './uni.scss'
+
+export function createApp() {
+  const app = createSSRApp(App)
+  const pinia = createPinia()
+  
+  app.use(pinia)
+  
+  // Инициализация глобальных утилит
+  app.config.globalProperties.$supabase = initSupabase()
+  app.config.globalProperties.$t = initTranslate().t
+  app.config.globalProperties.$showAlert = (message) => {
+    uni.showToast({
+      title: message,
+      icon: 'none',
+      duration: 3000
+    })
+  }
+  
+  // Глобальные функции
+  app.config.globalProperties.$copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch (err) {
+      console.error('Copy failed:', err)
+      return false
     }
-  },
-  "pages": [
-    {
-      "path": "pages/home/index",
-      "style": {
-        "navigationBarTitleText": "GLY",
-        "navigationStyle": "custom",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/get/index",
-      "style": {
-        "navigationBarTitleText": "Get",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/assets/index",
-      "style": {
-        "navigationBarTitleText": "Assets",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/mine/index",
-      "style": {
-        "navigationBarTitleText": "Mine",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/login/index",
-      "style": {
-        "navigationBarTitleText": "Login",
-        "navigationStyle": "custom",
-        "disableScroll": true
-      }
-    },
-    {
-      "path": "pages/register/index",
-      "style": {
-        "navigationBarTitleText": "Register",
-        "navigationStyle": "custom",
-        "disableScroll": true
-      }
-    }
-  ],
-  "globalStyle": {
-    "navigationBarTextStyle": "white",
-    "navigationBarTitleText": "GLY",
-    "navigationBarBackgroundColor": "#1a1a2e",
-    "backgroundColor": "#1a1a2e",
-    "backgroundColorTop": "#1a1a2e",
-    "backgroundColorBottom": "#1a1a2e",
-    "backgroundTextStyle": "light",
-    "enablePullDownRefresh": false,
-    "onReachBottomDistance": 50
-  },
-  "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#4e7771",
-    "backgroundColor": "#1a1a2e",
-    "borderStyle": "black",
-    "list": [
-      {
-        "pagePath": "pages/home/index",
-        "text": "Home",
-        "iconPath": "static/tabbar/home.png",
-        "selectedIconPath": "static/tabbar/home-active.png"
-      },
-      {
-        "pagePath": "pages/get/index",
-        "text": "Get",
-        "iconPath": "static/tabbar/get.png",
-        "selectedIconPath": "static/tabbar/get-active.png"
-      },
-      {
-        "pagePath": "pages/assets/index",
-        "text": "Assets",
-        "iconPath": "static/tabbar/assets.png",
-        "selectedIconPath": "static/tabbar/assets-active.png"
-      },
-      {
-        "pagePath": "pages/mine/index",
-        "text": "Mine",
-        "iconPath": "static/tabbar/mine.png",
-        "selectedIconPath": "static/tabbar/mine-active.png"
-      }
-    ]
+  }
+  
+  return {
+    app
   }
 }
